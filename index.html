@@ -187,9 +187,24 @@
     /* ANIMATIONS */
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
-    .reveal { opacity: 1; transform: none; transition: opacity 0.65s ease, transform 0.65s ease; }
-    body.js-ready .reveal { opacity: 0; transform: translateY(28px); }
-    body.js-ready .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* CSS-only reveal — no JS dependency */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: revealUp 0.6s ease forwards;
+    }
+    .reveal:nth-child(1)  { animation-delay: 0.05s; }
+    .reveal:nth-child(2)  { animation-delay: 0.15s; }
+    .reveal:nth-child(3)  { animation-delay: 0.25s; }
+    .reveal:nth-child(4)  { animation-delay: 0.35s; }
+    @keyframes revealUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Force visible fallback after 1.5s in case animation fails */
+    .reveal { animation-fill-mode: both; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { animation: none; opacity: 1; transform: none; }
+    }
 
     @media (max-width: 768px) {
       .about-grid { grid-template-columns: 1fr; gap: 2rem; }
@@ -529,9 +544,9 @@
         If you are looking for a candidate who combines a <strong>solid EEE background</strong> with a modern, <strong>AI-driven approach to efficiency</strong> &mdash; I would love to have a conversation.
       </p>
       <div class="contact-links reveal" style="transition-delay:0.22s">
-        <a href="/cdn-cgi/l/email-protection#45362c242826307373052228242c296b262a28" class="contact-link">
+        <a href="mailto:siamcu66&#64;gmail.com" class="contact-link">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          <span class="__cf_email__" data-cfemail="611208000c0214575721060c00080d4f020e0c">[email&#160;protected]</span>
+          siamcu66&#64;gmail.com
         </a>
         <a href="https://linkedin.com/in/misiam" target="_blank" class="contact-link">
           <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
@@ -546,17 +561,12 @@
     <p>&copy; 2025 <span>Moinul Islam Siam</span> &nbsp;&middot;&nbsp; Built with intention, automated with passion.</p>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    document.body.classList.add('js-ready');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
+  <script>
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
     window.addEventListener('scroll', () => {
       let current = '';
-      sections.for
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id'); });
+      navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent2)' : ''; });
+    });
+  </script>
